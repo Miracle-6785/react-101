@@ -38,7 +38,7 @@ phases:
           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
           -Dsonar.sources=src \
           -Dsonar.host.url=$SONAR_HOST \
-          -Dsonar.exclusions=**/node_modules/**,**/build/**,**/public/**, **/dist/** \
+          -Dsonar.exclusions=**/node_modules/**,**/build/**,**/public/** \
         - echo Sonar Scanner run complete.
       - sleep 5
       - curl $SONAR_HOST/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY > result.json
