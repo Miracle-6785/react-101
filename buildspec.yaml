@@ -35,7 +35,6 @@ phases:
       #   -Dsonar.sources=. \
       #   -Dsonar.host.url=$
       - sonar-scanner \
-        -Dsonar.organization=miracle1337 \
         -Dsonar.projectKey=miracle1337_lmao \
         -Dsonar.sources=. \
         -Dsonar.host.url=https://sonarcloud.io 
