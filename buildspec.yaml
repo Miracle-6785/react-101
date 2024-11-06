@@ -17,6 +17,11 @@ phases:
 
   pre_build:
     commands:
+      - echo Test environment setup...
+      - echo $SONAR_HOST
+      - echo $SONAR_PROJECT_KEY
+      - echo $SONAR_ORGANIZATION
+      - echo $SONAR_TOKEN
       - echo Installing Sonar Scanner...
       - export SONAR_SCANNER_VERSION=6.2.1.4610
       - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-x64
@@ -27,7 +32,11 @@ phases:
       - echo Sonar Scanner installation complete.
 
       - echo Running Sonar Scanner...
-      - sonar-scanner -Dsonar.organization=$SONAR_ORGANIZATION -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST
+      - sonar-scanner -Dsonar.organization=$SONAR_ORGANIZATION \
+                      -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                      -Dsonar.sources=src \
+                      -Dsonar.host.url=$SONAR_HOST \
+                      -Dsonar.exclusions=**/node_modules/**,**/build/**,**/public/**, **/dist/** \
       - echo Sonar Scanner run complete.
       - sleep 5
       - curl $SONAR_HOST/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY > result.json
