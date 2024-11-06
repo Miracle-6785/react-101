@@ -5,20 +5,17 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      # Install dependencies
-      echo Installing dependencies...
-      npm install
+      - echo Installing dependencies...
+      - npm install
 
   build:
     commands:
-      # Build the React app using Vite
-      echo Building the React app...
-      npm run build
+      - echo Building the React app...
+      - npm run build
 
   post_build:
     commands:
-      # Ensure that the build directory is generated and ready for deployment
-      echo Build completed. Output directory: dist/
+      - echo Build completed. Output directory: dist/
 
 artifacts:
   files:
