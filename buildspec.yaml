@@ -19,7 +19,14 @@ phases:
       - export SONAR_SCANNER_OPTS="-server"
       - echo Sonar Scanner installation complete.
 
-  scanning:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+      - npm install
+
+  build:
     commands:
       - echo Running Sonar Scanner...
       - sonar-scanner \
@@ -36,16 +43,6 @@ phases:
           echo "Quality Gate failed, aborting build.";
           exit 1;
         fi
-
-  install:
-    runtime-versions:
-      nodejs: 20
-    commands:
-      - echo Installing dependencies...
-      - npm install
-
-  build:
-    commands:
       - echo Building the React app...
       - npm run build
 
