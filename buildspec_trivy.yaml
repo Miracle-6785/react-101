@@ -6,8 +6,8 @@ phases:
       - curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.29.0/trivy_0.29.0_Linux-64bit.tar.gz | tar -xzv
   build:
     commands:
-      - echo Running Trivy security scan on the source code...
-      - ./trivy fs --severity HIGH,MEDIUM --no-progress --ignore-unfixed --exclude node_modules,dist,public .
+      - echo Running Trivy security scan...
+      - ./trivy fs --exit-code 1 --severity HIGH,CRITICAL --no-progress .
   post_build:
     commands:
       - echo Trivy scan completed.
