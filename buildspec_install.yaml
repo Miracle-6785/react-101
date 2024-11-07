@@ -12,3 +12,7 @@ phases:
     commands:
       - echo Installing dependencies...
       - npm ci  # Clean install, especially for CI/CD
+
+artifacts:
+  files:
+    - '**/*'

@@ -6,7 +6,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - echo Build completed. Output directory:
+      - echo Build completed. Output directory
       - ls -l dist/
 artifacts:
   files:
