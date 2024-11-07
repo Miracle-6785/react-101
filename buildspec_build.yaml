@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo Building the React app...
+      - npm run build
+  post_build:
+    commands:
+      - echo Build completed. Output directory:
+      - ls -l dist/
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
+cache:
+  paths:
+    - node_modules/**/*  # Cache dependencies between builds

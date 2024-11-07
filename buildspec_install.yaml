@@ -1,0 +1,14 @@
+version: 0.2
+env:
+  secrets-manager:
+    SONAR_TOKEN: 'prod/v1/sonar:SonarToken'
+    SONAR_HOST: 'prod/v1/sonar:Host'
+    SONAR_PROJECT_KEY: 'prod/v1/sonar:Project'
+    SONAR_ORGANIZATION: 'prod/v1/sonar:Organization'
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+      - npm ci  # Clean install, especially for CI/CD

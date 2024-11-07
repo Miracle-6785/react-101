@@ -1,118 +1,15 @@
-# version: 0.2
-# env:
-#   secrets-manager:
-#     SONAR_TOKEN: 'prod/v1/sonar:SonarToken'
-#     SONAR_HOST: 'prod/v1/sonar:Host'
-#     SONAR_PROJECT_KEY: 'prod/v1/sonar:Project'
-#     SONAR_ORGANIZATION: 'prod/v1/sonar:Organization'
-# phases:
-#   install:
-#     runtime-versions:
-#       nodejs: 20
-#     commands:
-#       - echo Installing dependencies...
-#       - npm install
-#   pre_build:
-#     commands:
-#       - echo Installing Sonar Scanner...
-#       - export SONAR_SCANNER_VERSION=6.2.1.4610
-#       - >-
-#         export
-#         SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-x64
-#       - >-
-#         curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip
-#         https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip
-#       - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
-#       - 'export PATH=$SONAR_SCANNER_HOME/bin:$PATH'
-#       - export SONAR_SCANNER_OPTS="-server"
-#       - echo Sonar Scanner installation complete.
-#       - echo Running Sonar Scanner...
-#       - >-
-#         sonar-scanner -Dsonar.organization=$SONAR_ORGANIZATION
-#         -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.sources=src
-#         -Dsonar.host.url=$SONAR_HOST
-#         -Dsonar.exclusions=**/node_modules/**,**/build/**,**/public/**
-#       - echo Sonar Scanner run complete.
-#       - sleep 5
-#       - >-
-#         curl
-#         $SONAR_HOST/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY
-#         > result.json
-#       - cat result.json
-#       - |
-#         if [ "$(jq -r '.projectStatus.status' result.json)" == "ERROR" ]; then
-#           echo "Quality Gate failed, aborting build.";
-#           exit 1;
-#         fi
-#   build:
-#     commands:
-#       - echo Building the React app...
-#       - npm run build
-#   post_build:
-#     commands:
-#       - echo Build completed. Output directory
-# artifacts:
-#   files:
-#     - '**/*'
-#   base-directory: dist
-# cache:
-#   paths:
-#     - node_modules/**/*
-
 version: 0.2
-env:
-  secrets-manager:
-    SONAR_TOKEN: 'prod/v1/sonar:SonarToken'
-    SONAR_HOST: 'prod/v1/sonar:Host'
-    SONAR_PROJECT_KEY: 'prod/v1/sonar:Project'
-    SONAR_ORGANIZATION: 'prod/v1/sonar:Organization'
 phases:
   install:
-    runtime-versions:
-      nodejs: 20
-    commands:
-      - echo Installing dependencies...
-      - npm ci  # Faster and cleaner install if you have package-lock.json
+    # Refer to the install buildspec file
+    - source: buildspec_install.yaml
   pre_build:
-    commands:
-      - echo Installing Sonar Scanner...
-      - export SONAR_SCANNER_VERSION=6.2.1.4610
-      - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-x64
-      - echo Checking for cached Sonar Scanner...
-      - if [ ! -d "$SONAR_SCANNER_HOME" ]; then
-          curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip;
-          unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/;
-        else
-          echo "Using cached Sonar Scanner";
-        fi
-      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-      - export SONAR_SCANNER_OPTS="-server"
-      - echo Sonar Scanner installation complete.
-      - echo Running Sonar Scanner...
-      - sonar-scanner -Dsonar.organization=$SONAR_ORGANIZATION -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.sources=src -Dsonar.host.url=$SONAR_HOST -Dsonar.exclusions=**/node_modules/**,**/build/**,**/public/**
-      - echo Sonar Scanner run complete.
-      - sleep 5
-      - echo Checking Sonar Quality Gate status...
-      - curl $SONAR_HOST/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY > result.json
-      - cat result.json
-      - |
-        if [ "$(jq -r '.projectStatus.status' result.json)" == "ERROR" ]; then
-          echo "Quality Gate failed, aborting build.";
-          exit 1;
-        fi
+    # Refer to the SonarQube analysis buildspec file
+    - source: buildspec_sonar.yaml
+    - source: buildspec_trivy.yaml
   build:
-    commands:
-      - echo Building the React app...
-      - npm run build
+    # Refer to the build phase (React app build)
+    - source: buildspec_build.yaml
   post_build:
     commands:
-      - echo Build completed. Output directory
-      - ls -l dist/  # Added to list the files in the output directory for debugging
-artifacts:
-  files:
-    - '**/*'
-  base-directory: dist
-cache:
-  paths:
-    - node_modules/**/*  # Ensure node_modules is cached effectively
-    - $HOME/.sonar/**/*   # Cache Sonar Scanner for faster future builds
+      - echo All phases completed successfully.
