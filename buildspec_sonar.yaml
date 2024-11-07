@@ -65,6 +65,7 @@
 #     - node_modules/**/*
 #     - $HOME/.sonar/**/*
 
+# version: 0.2
 version: 0.2
 env:
   secrets-manager:
